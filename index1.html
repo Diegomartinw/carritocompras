@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar productos con array</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Productos</h1>
+    <form action="">
+    <input type="text" name="" id="buscar">
+    <input type="button" value="Buscar" onclick="buscalo()">
+    </form>
+
+    <section id="articulos">
+        <div class="contenedor">
+            <article class="articulos">
+                <img src="">
+                <h4></h4>
+
+
+            </article>
+        </div>
+    </section>
+
+    <div id="agregar">
+
+        <input type="text" id="imagen" placeholder="Ingrese link imagen">
+        <input type="text" id="texto" placeholder="Ingrese texto">
+        <input type="button" value="Ingresar producto" onclick="imagen()">
+        <input type="button" value="Agregar al carrito" onclick="location.href='carrito.html'">
+        <input type="button" value="Guardar" id="save">
+
+    </div>
+
+
+    <script>
+        let tabular = document.querySelector(".contenedor");
+        var prod;
+
+
+        muestro();
+
+        function muestro() {
+            let template = ``;
+            var productos = ["Fire TV Stick 4K Ultra HD con mando por voz Alexa", "Miniproyector, 3800 lumens por menos de 80 euros", "Samsung 4K UHD de 50”"];
+            var fotos = ["https://revistabyte.es/wp-content/uploads/2020/05/1-323x360.jpg.webp", "https://revistabyte.es/wp-content/uploads/2020/05/3-381x360.jpg.webp", "https://revistabyte.es/wp-content/uploads/2020/05/4-425x360.jpg.webp"];
+            var misFotos = localStorage.getItem("misfotos");
+            var misProductos = localStorage.getItem("misproductos");
+            var imagenes = JSON.parse(misFotos);
+            var articulolocal = JSON.parse(misProductos);
+
+
+            if (imagenes !== null) {
+
+
+                console.log(imagenes);
+
+                for (let i = 0; i < imagenes.length; i++) {
+                    let celdasFila = imagenes[i].split(',');
+                    template += `<article class="articulos">`;
+                    template += `<img src="${celdasFila}"/>`;
+                    template += `<h4>${articulolocal[i]}</h4>`;
+                    template += `<input type="button" value="Eliminar" onclick="eliminar(${i})">`;
+                    template += `<input type="button" value="Editar" onclick="editar(${i})">`;
+                    template += `</article>`;
+                    tabular.innerHTML = template;
+                }
+            }
+
+
+            else {
+                console.log("entro");
+
+                localStorage.setItem("misfotos", JSON.stringify(fotos));
+                localStorage.setItem("misproductos", JSON.stringify(productos));
+
+
+                var misFotos = localStorage.getItem("misfotos");
+                var misProductos = localStorage.getItem("misproductos");
+                var imagenes = JSON.parse(misFotos);
+                var articulolocal = JSON.parse(misProductos);
+
+                console.log(imagenes);
+
+                for (let i = 0; i < imagenes.length; i++) {
+                    let celdasFila = imagenes[i].split(',');
+                    template += `<article class="articulos">`;
+                    template += `<img src="${celdasFila}"/>`;
+                    template += `<h4>${articulolocal[i]}</h4>`;
+                    template += `<input type="button" value="Eliminar" onclick="eliminar(${i})">`;
+                    template += `<input type="button" value="Editar" onclick="editar(${i})">`;
+                    template += `</article>`;
+                    tabular.innerHTML = template;
+                }
+
+            }
+
+        }
+
+
+
+
+        function imagen() {
+            let template = ``;
+            let photo = document.querySelector("#imagen").value;
+            let text = document.querySelector("#texto").value;
+            var misFotos = localStorage.getItem("misfotos");
+            var misProductos = localStorage.getItem("misproductos");
+            var imagenes = JSON.parse(misFotos);
+            var articulolocal = JSON.parse(misProductos);
+            imagenes.push(photo);
+            articulolocal.push(text);
+            localStorage.setItem("misfotos", JSON.stringify(imagenes));
+            localStorage.setItem("misproductos", JSON.stringify(articulolocal));
+            console.log(imagenes);
+
+
+
+
+            for (let i = 0; i < imagenes.length; i++) {
+                let celdasFila = imagenes[i].split(',');
+                template += `<article class="articulos">`;
+                template += `<img src="${celdasFila}"/>`;
+                template += `<h4>${articulolocal[i]}</h4>`;
+                template += `<input type="button" value="Eliminar" onclick="eliminar(${i})">`;
+                template += `<input type="button" value="Editar" onclick="editar(${i})">`;
+                template += `</article>`;
+                tabular.innerHTML = template;
+            }
+
+
+
+        }
+
+        function eliminar(nroProducto) {
+            let template = ``;
+            console.log(nroProducto);
+            var misFotos = localStorage.getItem("misfotos");
+            var misProductos = localStorage.getItem("misproductos");
+            var imagenes = JSON.parse(misFotos);
+            var articulolocal = JSON.parse(misProductos);
+            console.log(imagenes);
+            imagenes.splice(nroProducto, 1);
+            articulolocal.splice(nroProducto, 1);
+            localStorage.removeItem("misfotos");
+            localStorage.removeItem("misproductos");
+            console.log(imagenes);
+            console.log(articulolocal);
+            localStorage.setItem("misfotos", JSON.stringify(imagenes));
+            localStorage.setItem("misproductos", JSON.stringify(articulolocal));
+
+            muestro();
+
+
+        }
+
+        function editar(prod) {
+
+            document.querySelector("#save").setAttribute("onclick", `guardar(${prod})`);
+            let template = ``;
+            var misFotos = localStorage.getItem("misfotos");
+            var misProductos = localStorage.getItem("misproductos");
+            var imagenes = JSON.parse(misFotos);
+            var articulolocal = JSON.parse(misProductos);
+
+            console.log(imagenes[prod]);
+            console.log(articulolocal[prod]);
+            document.querySelector("#imagen").value = imagenes[prod];
+            document.querySelector("#texto").value = articulolocal[prod];
+
+
+            muestro();
+
+        }
+
+        function guardar(prod) {
+            let template = ``;
+            var misFotos = localStorage.getItem("misfotos");
+            var misProductos = localStorage.getItem("misproductos");
+            var imagenes = JSON.parse(misFotos);
+            var articulolocal = JSON.parse(misProductos);
+            imagenes.splice(prod, 1);
+            articulolocal.splice(prod, 1);
+            localStorage.removeItem("misfotos");
+            localStorage.removeItem("misproductos");
+            console.log(imagenes);
+            console.log(articulolocal);
+            localStorage.setItem("misfotos", JSON.stringify(imagenes));
+            localStorage.setItem("misproductos", JSON.stringify(articulolocal));
+            console.log(prod);
+            imagen();
+
+
+
+        }
+
+        function buscalo(){
+            let busqueda=document.querySelector("#buscar").value;
+            let busquedamin=busqueda.toLowerCase();
+            console.log(busqueda);
+            let template = ``;
+            var misFotos = localStorage.getItem("misfotos");
+            var misProductos = localStorage.getItem("misproductos");
+            var imagenes = JSON.parse(misFotos);
+            var articulolocal = JSON.parse(misProductos);
+            
+            console.log(misProductos);
+            for (let i = 0; i < articulolocal.length; i++) {
+                
+                
+            
+            if (articulolocal[i].toLowerCase().includes(busquedamin)){
+                console.log(articulolocal[i]);
+                console.log(imagenes[i]);
+                //let celdasFila = imagenes[i].split(',');
+                template += `<article class="articulos">`;
+                template += `<img src="${imagenes[i]}"/>`;
+                template += `<h4>${articulolocal[i]}</h4>`;
+                template += `<input type="button" value="Eliminar" onclick="eliminar(${i})">`;
+                template += `<input type="button" value="Editar" onclick="editar(${i})">`;
+                template += `</article>`;
+                tabular.innerHTML = template;
+
+            }
+        
+    }
+console.log(busquedamin);
+let articulomin=misProductos.toLowerCase();
+console.log(articulomin);
+    if (!articulomin.includes(busquedamin)){
+        console.log("no lo encuentro");
+        template=`<h1>Su búsqueda no coincide con ningún producto de nuestra tienda</h1>`;
+        tabular.innerHTML = template;
+
+    }
+
+
+
+        }
+
+
+    </script>
+
+</body>
+
+</html>
